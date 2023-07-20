@@ -12,3 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Tasks package definition."""
+
+from official.vision.tasks.image_classification import ImageClassificationTask
+from official.vision.tasks.maskrcnn import MaskRCNNTask
+from official.vision.tasks.retinanet import RetinaNetTask
+from official.vision.tasks.semantic_segmentation import SemanticSegmentationTask
+from official.vision.tasks.video_classification import VideoClassificationTask

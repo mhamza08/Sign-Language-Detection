@@ -12,3 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""All necessary imports for registration."""
+# pylint: disable=unused-import
+from official import vision
+from official.utils.testing import mock_task
