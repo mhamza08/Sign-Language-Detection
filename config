@@ -6,8 +6,8 @@
 	symlinks = false
 	ignorecase = true
 [remote "origin"]
-	url = https://github.com/heartexlabs/labelImg
+	url = https://github.com/nicknochnack/RealTimeObjectDetection
 	fetch = +refs/heads/*:refs/remotes/origin/*
-[branch "master"]
+[branch "main"]
 	remote = origin
-	merge = refs/heads/master
+	merge = refs/heads/main
