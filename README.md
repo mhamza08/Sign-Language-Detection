@@ -1,244 +1,291 @@
-# TensorFlow Object Detection API
-[![TensorFlow 2.2](https://img.shields.io/badge/TensorFlow-2.2-FF6F00?logo=tensorflow)](https://github.com/tensorflow/tensorflow/releases/tag/v2.2.0)
-[![TensorFlow 1.15](https://img.shields.io/badge/TensorFlow-1.15-FF6F00?logo=tensorflow)](https://github.com/tensorflow/tensorflow/releases/tag/v1.15.0)
-[![Python 3.6](https://img.shields.io/badge/Python-3.6-3776AB)](https://www.python.org/downloads/release/python-360/)
+# Deep Local and Global Image Features
 
-## Deprecation
+[![TensorFlow 2.2](https://img.shields.io/badge/tensorflow-2.2-brightgreen)](https://github.com/tensorflow/tensorflow/releases/tag/v2.2.0)
+[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
-*Note to our users*: the Tensorflow Object Detection API is no longer being
-maintained to be compatible with new versions of external dependencies
-(from pip, apt-get etc.). Any changes that follow are meant for internal
-maintenance. We may use the OD API to release projects in the future,
-in which case we will provide full install instructions or Docker images.
-We encourage users seeking an actively maintained detection / segmentation
-codebase to consider [TF-Vision](https://github.com/tensorflow/models/tree/master/official/vision)
-or [scenic](https://github.com/google-research/scenic). We have preserved
-the original install instructions below in case anyone wants to try out old
-models or scripts.
+This project presents code for deep local and global image feature methods,
+which are particularly useful for the computer vision tasks of instance-level
+recognition and retrieval. These were introduced in the
+[DELF](https://arxiv.org/abs/1612.06321),
+[Detect-to-Retrieve](https://arxiv.org/abs/1812.01584),
+[DELG](https://arxiv.org/abs/2001.05027) and
+[Google Landmarks Dataset v2](https://arxiv.org/abs/2004.01804) papers.
 
-Creating accurate machine learning models capable of localizing and identifying
-multiple objects in a single image remains a core challenge in computer vision.
-The TensorFlow Object Detection API is an open source framework built on top of
-TensorFlow that makes it easy to construct, train and deploy object detection
-models. At Google we’ve certainly found this codebase to be useful for our
-computer vision needs, and we hope that you will as well. <p align="center">
-<img src="g3doc/img/kites_detections_output.jpg" width=676 height=450> </p>
-If you use the TensorFlow Object
-Detection API for a research publication, please consider citing:
+We provide Tensorflow code for building and training models, and python code for
+image retrieval and local feature matching. Pre-trained models for the landmark
+recognition domain are also provided.
+
+If you make use of this codebase, please consider citing the following papers:
+
+DELF:
+[![Paper](http://img.shields.io/badge/paper-arXiv.1612.06321-B3181B.svg)](https://arxiv.org/abs/1612.06321)
 
 ```
-"Speed/accuracy trade-offs for modern convolutional object detectors."
-Huang J, Rathod V, Sun C, Zhu M, Korattikara A, Fathi A, Fischer I, Wojna Z,
-Song Y, Guadarrama S, Murphy K, CVPR 2017
+"Large-Scale Image Retrieval with Attentive Deep Local Features",
+H. Noh, A. Araujo, J. Sim, T. Weyand and B. Han,
+Proc. ICCV'17
 ```
 
-\[[link](https://arxiv.org/abs/1611.10012)\]\[[bibtex](https://scholar.googleusercontent.com/scholar.bib?q=info:l291WsrB-hQJ:scholar.google.com/&output=citation&scisig=AAGBfm0AAAAAWUIIlnPZ_L9jxvPwcC49kDlELtaeIyU-&scisf=4&ct=citation&cd=-1&hl=en&scfhb=1)\]
+Detect-to-Retrieve:
+[![Paper](http://img.shields.io/badge/paper-arXiv.1812.01584-B3181B.svg)](https://arxiv.org/abs/1812.01584)
 
-<p align="center">
-  <img src="g3doc/img/tf-od-api-logo.png" width=140 height=195>
-</p>
+```
+"Detect-to-Retrieve: Efficient Regional Aggregation for Image Search",
+M. Teichmann*, A. Araujo*, M. Zhu and J. Sim,
+Proc. CVPR'19
+```
 
-## Support for TensorFlow 2 and 1
-The TensorFlow Object Detection API supports both TensorFlow 2 (TF2) and
-TensorFlow 1 (TF1). A majority of the modules in the library are both TF1 and
-TF2 compatible. In cases where they are not, we provide two versions.
+DELG:
+[![Paper](http://img.shields.io/badge/paper-arXiv.2001.05027-B3181B.svg)](https://arxiv.org/abs/2001.05027)
 
-Although we will continue to maintain the TF1 models and provide support, we
-encourage users to try the Object Detection API with TF2 for the following
-reasons:
+```
+"Unifying Deep Local and Global Features for Image Search",
+B. Cao*, A. Araujo* and J. Sim,
+Proc. ECCV'20
+```
 
-* We provide new architectures supported in TF2 only and we will continue to
-  develop in TF2 going forward.
+GLDv2:
+[![Paper](http://img.shields.io/badge/paper-arXiv.2004.01804-B3181B.svg)](https://arxiv.org/abs/2004.01804)
 
-* The popular models we ported from TF1 to TF2 achieve the same performance.
+```
+"Google Landmarks Dataset v2 - A Large-Scale Benchmark for Instance-Level Recognition and Retrieval",
+T. Weyand*, A. Araujo*, B. Cao and J. Sim,
+Proc. CVPR'20
+```
 
-* A single training and evaluation binary now supports both GPU and TPU
-  distribution strategies making it possible to train models with synchronous
-  SGD by default.
+## News
 
-* Eager execution with new binaries makes debugging easy!
+-   [Jul'20] Check out our ECCV'20 paper:
+    ["Unifying Deep Local and Global Features for Image Search"](https://arxiv.org/abs/2001.05027)
+-   [Apr'20] Check out our CVPR'20 paper: ["Google Landmarks Dataset v2 - A
+    Large-Scale Benchmark for Instance-Level Recognition and
+    Retrieval"](https://arxiv.org/abs/2004.01804)
+-   [Jun'19] DELF achieved 2nd place in
+    [CVPR Visual Localization challenge (Local Features track)](https://sites.google.com/corp/view/ltvl2019).
+    See our slides
+    [here](https://docs.google.com/presentation/d/e/2PACX-1vTswzoXelqFqI_pCEIVl2uazeyGr7aKNklWHQCX-CbQ7MB17gaycqIaDTguuUCRm6_lXHwCdrkP7n1x/pub?start=false&loop=false&delayms=3000).
+-   [Apr'19] Check out our CVPR'19 paper:
+    ["Detect-to-Retrieve: Efficient Regional Aggregation for Image Search"](https://arxiv.org/abs/1812.01584)
+-   [Jun'18] DELF achieved state-of-the-art results in a CVPR'18 image retrieval
+    paper: [Radenovic et al., "Revisiting Oxford and Paris: Large-Scale Image
+    Retrieval Benchmarking"](https://arxiv.org/abs/1803.11285).
+-   [Apr'18] DELF was featured in
+    [ModelDepot](https://modeldepot.io/mikeshi/delf/overview)
+-   [Mar'18] DELF is now available in
+    [TF-Hub](https://www.tensorflow.org/hub/modules/google/delf/1)
 
-Finally, if are an existing user of the Object Detection API we have retained
-the same config language you are familiar with and ensured that the
-TF2 training/eval binary takes the same arguments as our TF1 binaries.
+## Datasets
 
-Note: The models we provide in [TF2 Zoo](g3doc/tf2_detection_zoo.md) and
-[TF1 Zoo](g3doc/tf1_detection_zoo.md) are specific to the TensorFlow major
-version and are not interoperable.
+We have two Google-Landmarks dataset versions:
 
-Please select one of the links below for TensorFlow version-specific
-documentation of the Object Detection API:
+-   Initial version (v1) can be found
+    [here](https://www.kaggle.com/google/google-landmarks-dataset). In includes
+    the Google Landmark Boxes which were described in the Detect-to-Retrieve
+    paper.
+-   Second version (v2) has been released as part of two Kaggle challenges:
+    [Landmark Recognition](https://www.kaggle.com/c/landmark-recognition-2019)
+    and [Landmark Retrieval](https://www.kaggle.com/c/landmark-retrieval-2019).
+    It can be downloaded from CVDF
+    [here](https://github.com/cvdfoundation/google-landmark). See also
+    [the CVPR'20 paper](https://arxiv.org/abs/2004.01804) on this new dataset
+    version.
 
-<!-- mdlint off(WHITESPACE_LINE_LENGTH) -->
-### Tensorflow 2.x
-  *   <a href='g3doc/tf2.md'>
-        Object Detection API TensorFlow 2</a><br>
-  *   <a href='g3doc/tf2_detection_zoo.md'>
-        TensorFlow 2 Model Zoo</a><br>
+If you make use of these datasets in your research, please consider citing the
+papers mentioned above.
 
-### Tensorflow 1.x
-  *   <a href='g3doc/tf1.md'>
-        Object Detection API TensorFlow 1</a><br>
-  *   <a href='g3doc/tf1_detection_zoo.md'>
-        TensorFlow 1 Model Zoo</a><br>
-<!-- mdlint on -->
+## Installation
 
-## Whats New
+To be able to use this code, please follow
+[these instructions](INSTALL_INSTRUCTIONS.md) to properly install the DELF
+library.
 
-### SpaghettiNet for Edge TPU
+## Quick start
 
-We have released SpaghettiNet models optimized for the Edge TPU in the [Google Tensor SoC](https://blog.google/products/pixel/google-tensor-debuts-new-pixel-6-fall/).
+### Pre-trained models
 
-SpaghettiNet models are derived from a TuNAS search space that incorporates
-group convolution based [Inverted Bottleneck](https://arxiv.org/abs/1801.04381) blocks.
-The backbone and detection head are connected through [MnasFPN](https://arxiv.org/abs/1912.01106)-style feature map
-merging and searched jointly.
+We release several pre-trained models. See instructions in the following
+sections for examples on how to use the models.
 
-When compared to MobileDet-EdgeTPU, SpaghettiNet models achieve +2.2% mAP
-(absolute) on COCO17 at the same latency. They also consume <70% of the energy
-used by MobileDet-EdgeTPU to achieve the same accuracy.
+**DELF pre-trained on the Google-Landmarks dataset v1**
+([link](http://storage.googleapis.com/delf/delf_gld_20190411.tar.gz)). Presented
+in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584). Boosts
+performance by ~4% mAP compared to ICCV'17 DELF model.
 
-Sample config available [here](configs/tf1/ssd_spaghettinet_edgetpu_320x320_coco17_sync_4x4.config).
+**DELG pre-trained on the Google-Landmarks dataset v1**
+([R101-DELG](http://storage.googleapis.com/delf/r101delg_gld_20200814.tar.gz),
+[R50-DELG](http://storage.googleapis.com/delf/r50delg_gld_20200814.tar.gz)).
+Presented in the [DELG paper](https://arxiv.org/abs/2001.05027).
 
-<b>Thanks to contributors</b>: Marie White, Hao Xu, Hanxiao Liu and Suyog Gupta.
+**DELG pre-trained on the Google-Landmarks dataset v2 (clean)**
+([R101-DELG](https://storage.googleapis.com/delf/r101delg_gldv2clean_20200914.tar.gz),
+[R50-DELG](https://storage.googleapis.com/delf/r50delg_gldv2clean_20200914.tar.gz)).
+Presented in the [DELG paper](https://arxiv.org/abs/2001.05027).
 
-### DeepMAC architecture
+**RN101-ArcFace pre-trained on the Google-Landmarks dataset v2 (train-clean)**
+([link](https://storage.googleapis.com/delf/rn101_af_gldv2clean_20200814.tar.gz)).
+Presented in the [GLDv2 paper](https://arxiv.org/abs/2004.01804).
 
-We have released our new architecture, **DeepMAC**, designed for partially
-supervised instance segmentation. DeepMAC stands for Deep Mask-heads
-Above CenterNet, and is based on our CenterNet implementation. In our
-[paper](https://arxiv.org/abs/2104.00613) we show that DeepMAC achieves
-state-of-the-art results for the partially supervised instance segmentation
-task without using any specialty modules or losses; just better mask-head
-architectures. The findings from our paper are not specific to CenterNet and
-can also be applied to Mask R-CNN or without any detector at all.
-Please see links below for more details
+**DELF pre-trained on Landmarks-Clean/Landmarks-Full dataset**
+([link](http://storage.googleapis.com/delf/delf_v1_20171026.tar.gz)). Presented
+in the [DELF paper](https://arxiv.org/abs/1612.06321), model was trained on the
+dataset released by the [DIR paper](https://arxiv.org/abs/1604.01325).
 
-*   [DeepMAC documentation](g3doc/deepmac.md).
-*   [Mask RCNN code](https://github.com/tensorflow/models/tree/master/official/vision/beta/projects/deepmac_maskrcnn)
-    in TF Model garden code base.
-*   [DeepMAC Colab](./colab_tutorials/deepmac_colab.ipynb) that lets you run a
-    pre-trained DeepMAC model on user-specified boxes. Note that you are not
-    restricted to COCO classes!
-*   Project website - [git.io/deepmac](https://git.io/deepmac)
+**Faster-RCNN detector pre-trained on Google Landmark Boxes**
+([link](http://storage.googleapis.com/delf/d2r_frcnn_20190411.tar.gz)).
+Presented in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584).
 
-<b>Thanks to contributors</b>: Vighnesh Birodkar, Zhichao Lu, Siyang Li,
- Vivek Rathod, Jonathan Huang
+**MobileNet-SSD detector pre-trained on Google Landmark Boxes**
+([link](http://storage.googleapis.com/delf/d2r_mnetssd_20190411.tar.gz)).
+Presented in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584).
 
+Besides these, we also release pre-trained codebooks for local feature
+aggregation. See the
+[Detect-to-Retrieve instructions](delf/python/detect_to_retrieve/DETECT_TO_RETRIEVE_INSTRUCTIONS.md)
+for details.
 
-### Mobile Inference for TF2 models
+### DELF extraction and matching
 
-TF2 OD API models can now be converted to TensorFlow Lite! Only SSD models
-currently supported. See <a href='g3doc/running_on_mobile_tf2.md'>documentation</a>.
+Please follow [these instructions](EXTRACTION_MATCHING.md). At the end, you
+should obtain a nice figure showing local feature matches, as:
 
-**Thanks to contributors**: Sachin Joglekar
+![MatchedImagesExample](delf/python/examples/matched_images_example.jpg)
 
-### TensorFlow 2 Support
+### DELF training
 
-We are happy to announce that the TF OD API officially supports TF2! Our release
-includes:
+Please follow [these instructions](delf/python/training/README.md).
 
-* New binaries for train/eval/export that are designed to run in eager mode.
-* A suite of TF2 compatible (Keras-based) models; this includes migrations of
-  our most popular TF1.x models (e.g., SSD with MobileNet, RetinaNet,
-  Faster R-CNN, Mask R-CNN), as well as a few new architectures for which we
-  will only maintain TF2 implementations:
+### DELG
 
-    1. CenterNet - a simple and effective anchor-free architecture based on
-       the recent [Objects as Points](https://arxiv.org/abs/1904.07850) paper by
-       Zhou et al.
-    2. [EfficientDet](https://arxiv.org/abs/1911.09070) - a recent family of
-       SOTA models discovered with the help of Neural Architecture Search.
+Please follow [these instructions](delf/python/delg/DELG_INSTRUCTIONS.md). At
+the end, you should obtain image retrieval results on the Revisited Oxford/Paris
+datasets.
 
-* COCO pre-trained weights for all of the models provided as TF2 style
-  object-based checkpoints.
-* Access to [Distribution Strategies](https://www.tensorflow.org/guide/distributed_training)
-  for distributed training --- our model are designed to be trainable using sync
-  multi-GPU and TPU platforms.
-* Colabs demo’ing eager mode training and inference.
+### GLDv2 baseline
 
-See our release blogpost [here](https://blog.tensorflow.org/2020/07/tensorflow-2-meets-object-detection-api.html).
-If you are an existing user of the TF OD API using TF 1.x, don’t worry, we’ve
-got you covered.
+Please follow
+[these instructions](delf/python/datasets/google_landmarks_dataset/README.md). At the
+end, you should obtain image retrieval results on the Revisited Oxford/Paris
+datasets.
 
-**Thanks to contributors**: Akhil Chinnakotla, Allen Lavoie, Anirudh Vegesana,
-Anjali Sridhar, Austin Myers, Dan Kondratyuk, David Ross, Derek Chow, Jaeyoun
-Kim, Jing Li, Jonathan Huang, Jordi Pont-Tuset, Karmel Allison, Kathy Ruan,
-Kaushik Shivakumar, Lu He, Mingxing Tan, Pengchong Jin, Ronny Votel, Sara Beery,
-Sergi Caelles Prat, Shan Yang, Sudheendra Vijayanarasimhan, Tina Tian, Tomer
-Kaftan, Vighnesh Birodkar, Vishnu Banna, Vivek Rathod, Yanhui Liang, Yiming Shi,
-Yixin Shi, Yu-hui Chen, Zhichao Lu.
+### Landmark detection
 
-### MobileDet GPU
+Please follow [these instructions](DETECTION.md). At the end, you should obtain
+a nice figure showing a detection, as:
 
-We have released SSDLite with MobileDet GPU backbone, which achieves 17% mAP
-higher than the MobileNetV2 SSDLite (27.5 mAP vs 23.5 mAP) on a NVIDIA Jetson
-Xavier at comparable latency (3.2ms vs 3.3ms).
+![DetectionExample1](delf/python/examples/detection_example_1.jpg)
 
-Along with the model definition, we are also releasing model checkpoints trained
-on the COCO dataset.
+### Detect-to-Retrieve
 
-<b>Thanks to contributors</b>: Yongzhe Wang, Bo Chen, Hanxiao Liu, Le An
-(NVIDIA), Yu-Te Cheng (NVIDIA), Oliver Knieps (NVIDIA), and Josh Park (NVIDIA).
+Please follow
+[these instructions](delf/python/detect_to_retrieve/DETECT_TO_RETRIEVE_INSTRUCTIONS.md).
+At the end, you should obtain image retrieval results on the Revisited
+Oxford/Paris datasets.
 
-### Context R-CNN
+## Code overview
 
-We have released [Context R-CNN](https://arxiv.org/abs/1912.03538), a model that
-uses attention to incorporate contextual information images (e.g. from
-temporally nearby frames taken by a static camera) in order to improve accuracy.
-Importantly, these contextual images need not be labeled.
+DELF/D2R/DELG/GLD code is located under the `delf` directory. There are two
+directories therein, `protos` and `python`.
 
-*   When applied to a challenging wildlife detection dataset
-    ([Snapshot Serengeti](http://lila.science/datasets/snapshot-serengeti)),
-    Context R-CNN with context from up to a month of images outperforms a
-    single-frame baseline by 17.9% mAP, and outperforms S3D (a 3d convolution
-    based baseline) by 11.2% mAP.
-*   Context R-CNN leverages temporal context from the unlabeled frames of a
-    novel camera deployment to improve performance at that camera, boosting
-    model generalizeability.
+### `delf/protos`
 
-Read about Context R-CNN on the Google AI blog
-[here](https://ai.googleblog.com/2020/06/leveraging-temporal-context-for-object.html).
+This directory contains protobufs for local feature aggregation
+(`aggregation_config.proto`), serializing detected boxes (`box.proto`),
+serializing float tensors (`datum.proto`), configuring DELF/DELG extraction
+(`delf_config.proto`), serializing local features (`feature.proto`).
 
-We have provided code for generating data with associated context
-[here](g3doc/context_rcnn.md), and a sample config for a Context R-CNN model
-[here](samples/configs/context_rcnn_resnet101_snapshot_serengeti_sync.config).
+### `delf/python`
 
-Snapshot Serengeti-trained Faster R-CNN and Context R-CNN models can be found in
-the
-[model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md#snapshot-serengeti-camera-trap-trained-models).
+This directory contains files for several different purposes, such as:
+reading/writing tensors/features (`box_io.py`, `datum_io.py`, `feature_io.py`),
+local feature aggregation extraction and similarity computation
+(`feature_aggregation_extractor.py`, `feature_aggregation_similarity.py`) and
+helper functions for image/feature loading/processing (`utils.py`,
+`feature_extractor.py`).
 
-A colab demonstrating Context R-CNN is provided
-[here](colab_tutorials/context_rcnn_tutorial.ipynb).
+The subdirectory `delf/python/examples` contains sample scripts to run DELF/DELG
+feature extraction/matching (`extractor.py`, `extract_features.py`,
+`match_images.py`) and object detection (`detector.py`, `extract_boxes.py`).
+`delf_config_example.pbtxt` shows an example instantiation of the DelfConfig
+proto, used for DELF feature extraction.
 
-<b>Thanks to contributors</b>: Sara Beery, Jonathan Huang, Guanhang Wu, Vivek
-Rathod, Ronny Votel, Zhichao Lu, David Ross, Pietro Perona, Tanya Birch, and the
-Wildlife Insights AI Team.
+The subdirectory `delf/python/delg` contains sample scripts/configs related to
+the DELG paper: `extract_features.py` for local+global feature extraction (with
+and example `delg_gld_config.pbtxt`) and `perform_retrieval.py` for performing
+retrieval/scoring.
 
-## Release Notes
-See [notes](g3doc/release_notes.md) for all past releases.
+The subdirectory `delf/python/detect_to_retrieve` contains sample
+scripts/configs related to the Detect-to-Retrieve paper, for feature/box
+extraction/aggregation/clustering (`aggregation_extraction.py`,
+`boxes_and_features_extraction.py`, `cluster_delf_features.py`,
+`extract_aggregation.py`, `extract_index_boxes_and_features.py`,
+`extract_query_features.py`), image retrieval/reranking (`perform_retrieval.py`,
+`image_reranking.py`), along with configs used for feature
+extraction/aggregation (`delf_gld_config.pbtxt`,
+`index_aggregation_config.pbtxt`, `query_aggregation_config.pbtxt`) and
+Revisited Oxford/Paris dataset parsing/evaluation (`dataset.py`).
 
-## Getting Help
+The subdirectory `delf/python/google_landmarks_dataset` contains sample
+scripts/modules for computing GLD metrics (`metrics.py`,
+`compute_recognition_metrics.py`, `compute_retrieval_metrics.py`), GLD file IO
+(`dataset_file_io.py`) / reproducing results from the GLDv2 paper
+(`rn101_af_gldv2clean_config.pbtxt` and the instructions therein).
 
-To get help with issues you may encounter using the TensorFlow Object Detection
-API, create a new question on [StackOverflow](https://stackoverflow.com/) with
-the tags "tensorflow" and "object-detection".
+The subdirectory `delf/python/training` contains sample scripts/modules for
+performing model training (`train.py`) based on a ResNet50 DELF model
+(`model/resnet50.py`, `model/delf_model.py`), also presenting relevant model
+exporting scripts and associated utils (`model/export_model.py`,
+`model/export_global_model.py`, `model/export_model_utils.py`) and dataset
+downloading/preprocessing (`download_dataset.sh`, `build_image_dataset.py`,
+`datasets/googlelandmarks.py`).
 
-Please report bugs (actually broken code, not usage questions) to the
-tensorflow/models GitHub
-[issue tracker](https://github.com/tensorflow/models/issues), prefixing the
-issue name with "object_detection".
-
-Please check the [FAQ](g3doc/faq.md) for frequently asked questions before
-reporting an issue.
+Besides these, other files in the different subdirectories contain tests for the
+various modules.
 
 ## Maintainers
 
-* Jonathan Huang ([@GitHub jch1](https://github.com/jch1))
-* Vivek Rathod ([@GitHub tombstone](https://github.com/tombstone))
-* Vighnesh Birodkar ([@GitHub vighneshbirodkar](https://github.com/vighneshbirodkar))
-* Austin Myers ([@GitHub austin-myers](https://github.com/austin-myers))
-* Zhichao Lu ([@GitHub pkulzc](https://github.com/pkulzc))
-* Ronny Votel ([@GitHub ronnyvotel](https://github.com/ronnyvotel))
-* Yu-hui Chen ([@GitHub yuhuichen1015](https://github.com/yuhuichen1015))
-* Derek Chow  ([@GitHub derekjchow](https://github.com/derekjchow))
+Andr&eacute; Araujo (@andrefaraujo)
+
+## Release history
+
+### Jul, 2020
+
+-   Full TF2 support. Only one minor `compat.v1` usage left. Updated
+    instructions to require TF2.2
+-   Refactored / much improved training code, with very detailed, step-by-step
+    instructions
+
+**Thanks to contributors**: Dan Anghel, Barbara Fusinska and Andr&eacute;
+Araujo.
+
+### May, 2020
+
+-   Codebase is now Python3-first
+-   DELG model/code released
+-   GLDv2 baseline model released
+
+**Thanks to contributors**: Barbara Fusinska and Andr&eacute; Araujo.
+
+### April, 2020 (version 2.0)
+
+-   Initial DELF training code released.
+-   Codebase is now fully compatible with TF 2.1.
+
+**Thanks to contributors**: Arun Mukundan, Yuewei Na and Andr&eacute; Araujo.
+
+### April, 2019
+
+Detect-to-Retrieve code released.
+
+Includes pre-trained models to detect landmark boxes, and DELF model pre-trained
+on Google Landmarks v1 dataset.
+
+**Thanks to contributors**: Andr&eacute; Araujo, Marvin Teichmann, Menglong Zhu,
+Jack Sim.
+
+### October, 2017
+
+Initial release containing DELF-v1 code, including feature extraction and
+matching examples. Pre-trained DELF model from ICCV'17 paper is released.
+
+**Thanks to contributors**: Andr&eacute; Araujo, Hyeonwoo Noh, Youlong Cheng,
+Jack Sim.
