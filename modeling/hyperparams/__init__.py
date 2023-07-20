@@ -12,3 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Hyperparams package definition."""
+# pylint: disable=g-multiple-import
+from official.modeling.hyperparams.base_config import *
+from official.modeling.hyperparams.oneof import *
+from official.modeling.hyperparams.params_dict import *
+

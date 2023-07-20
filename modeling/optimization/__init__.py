@@ -12,3 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Optimization package definition."""
+
+# pylint: disable=wildcard-import
+from official.modeling.optimization.configs.learning_rate_config import *
+from official.modeling.optimization.configs.optimization_config import *
+from official.modeling.optimization.configs.optimizer_config import *
+from official.modeling.optimization.ema_optimizer import ExponentialMovingAverage
+from official.modeling.optimization.lr_schedule import *
+from official.modeling.optimization.optimizer_factory import OptimizerFactory
+from official.modeling.optimization.optimizer_factory import register_optimizer_cls

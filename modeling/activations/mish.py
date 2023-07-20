@@ -12,3 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Self Regularized Non-Monotonic Activation Function."""
+
+import tensorflow as tf
+
+
+@tf.keras.utils.register_keras_serializable(package='Text')
+def mish(x) -> tf.Tensor:
+  """Mish activation function.
+
+     Mish: A Self Regularized Non-Monotonic Activation Function
+     https://arxiv.org/pdf/1908.08681.pdf
+
+     Mish(x) = x * tanh(ln(1+e^x))
+
+  Args:
+    x: A `Tensor` representing preactivation values.
+
+  Returns:
+    The activation value.
+  """
+  x = tf.convert_to_tensor(x)
+  return x * tf.tanh(tf.nn.softplus(x))

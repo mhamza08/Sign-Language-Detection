@@ -12,3 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Adafactor optimizer.
+
+A new optimizer that will be open sourced soon.
+"""
+# pylint: disable=invalid-name, represents an unimplemented class definition.
+Adafactor = "Unimplemented"

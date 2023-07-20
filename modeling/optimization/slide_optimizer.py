@@ -12,3 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""SLIDE optimizer.
+
+A new optimizer that will be open sourced soon.
+"""
+
+SLIDE = "Unimplemented"
