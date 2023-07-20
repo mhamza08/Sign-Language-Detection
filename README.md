@@ -1,71 +1,50 @@
-# TF-NLP Model Garden
+# NLP Modeling Library
 
-⚠️ Disclaimer: All datasets hyperlinked from this page are not owned or
-distributed by Google. The dataset is made available by third parties. Please
-review the terms and conditions made available by the third parties before using
-the data.
+This library provides a set of Keras primitives (`tf.keras.Layer` and
+`tf.keras.Model`) that can be assembled into transformer-based models.
+They are flexible, validated, interoperable, and both TF1 and TF2 compatible.
 
-This codebase provides a Natural Language Processing modeling toolkit written in
-[TF2](https://www.tensorflow.org/guide/effective_tf2). It allows researchers and
-developers to reproduce state-of-the-art model results and train custom models
-to experiment new research ideas.
+* [`layers`](layers) are the fundamental building blocks for NLP models.
+They can be used to assemble new `tf.keras` layers or models.
 
-## Features
+* [`networks`](networks) are combinations of `tf.keras` layers (and possibly
+other networks). They are `tf.keras` models that would not be trained alone.
+It encapsulates common network structures like a transformer encoder into an
+easily handled object with a standardized configuration.
 
-*   Reusable and modularized modeling building blocks
-*   State-of-the-art reproducible
-*   Easy to customize and extend
-*   End-to-end training
-*   Distributed trainable on both GPUs and TPUs
+* [`models`](models) are combinations of `tf.keras` layers and models that can
+be trained. Several pre-built canned models are provided to train encoder
+networks. These models are intended as both convenience functions and canonical
+examples.
 
-## Major components
+* [`losses`](losses) contains common loss computation used in NLP tasks.
 
-### Libraries
+Please see the colab
+[NLP modeling library intro.ipynb](https://colab.sandbox.google.com/github/tensorflow/models/blob/master/docs/nlp/index.ipynb)
+for how to build transformer-based NLP models using above primitives.
 
-We provide modeling library to allow users to train custom models for new
-research ideas. Detailed instructions can be found in READMEs in each folder.
+Besides the pre-defined primitives, it also provides scaffold classes to allow
+easy experimentation with noval achitectures, e.g., you don’t need to fork a
+whole Transformer object to try a different kind of attention primitive,
+for instance.
 
-*   [modeling/](modeling): modeling library that provides building blocks
-    (e.g.,Layers, Networks, and Models) that can be assembled into
-    transformer-based architectures.
-*   [data/](data): binaries and utils for input preprocessing, tokenization,
-    etc.
+* [`TransformerScaffold`](layers/transformer_scaffold.py) implements the
+Transformer from ["Attention Is All You Need"]
+(https://arxiv.org/abs/1706.03762), with a customizable attention layer
+option. Users can pass a class to `attention_cls` and associated config to
+`attention_cfg`, in which case the scaffold will instantiate the class with
+the config, or pass a class instance to `attention_cls`.
 
-### State-of-the-Art models and examples
+* [`EncoderScaffold`](networks/encoder_scaffold.py) implements the transformer
+encoder from ["BERT: Pre-training of Deep Bidirectional Transformers for
+Language Understanding"](https://arxiv.org/abs/1810.04805), with customizable
+embedding subnetwork (which will replace the standard embedding logic) and/or a
+custom hidden layer (which will replace the Transformer instantiation in the
+encoder).
 
-We provide SoTA model implementations, pre-trained models, training and
-evaluation examples, and command lines. Detail instructions can be found in the
-READMEs for specific papers. Below are some papers implemented in the repository
-and more NLP projects can be found in the
-[`projects`](https://github.com/tensorflow/models/tree/master/official/projects)
-folder:
+Please see the colab
+[customize_encoder.ipynb](https://colab.sandbox.google.com/github/tensorflow/models/blob/master/docs/nlp/customize_encoder.ipynb)
+for how to use scaffold classes to build noval achitectures.
 
-1.  [BERT](MODEL_GARDEN.md#available-model-configs): [BERT: Pre-training of Deep
-    Bidirectional Transformers for Language
-    Understanding](https://arxiv.org/abs/1810.04805) by Devlin et al., 2018
-2.  [ALBERT](MODEL_GARDEN.md#available-model-configs):
-    [A Lite BERT for Self-supervised Learning of Language Representations](https://arxiv.org/abs/1909.11942)
-    by Lan et al., 2019
-3.  [XLNet](MODEL_GARDEN.md):
-    [XLNet: Generalized Autoregressive Pretraining for Language Understanding](https://arxiv.org/abs/1906.08237)
-    by Yang et al., 2019
-4.  [Transformer for translation](MODEL_GARDEN.md#available-model-configs):
-    [Attention Is All You Need](https://arxiv.org/abs/1706.03762) by Vaswani et
-    al., 2017
-
-### Common Training Driver
-
-We provide a single common driver [train.py](train.py) to train above SoTA
-models on popular tasks. Please see [docs/train.md](docs/train.md) for more
-details.
-
-### Pre-trained models with checkpoints and TF-Hub
-
-We provide a large collection of baselines and checkpoints for NLP pre-trained
-models. Please see [docs/pretrained_models.md](docs/pretrained_models.md) for
-more details.
-
-## More Documentations
-
-Please read through the model training tutorials and references in the
-[docs/ folder](docs/README.md).
+BERT and ALBERT models in this repo are implemented using this library.
+Code examples can be found in the corresponding model folder.
