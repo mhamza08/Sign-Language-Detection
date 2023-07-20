@@ -1,291 +1,325 @@
-# Deep Local and Global Image Features
+# DeepLab: Deep Labelling for Semantic Image Segmentation
 
-[![TensorFlow 2.2](https://img.shields.io/badge/tensorflow-2.2-brightgreen)](https://github.com/tensorflow/tensorflow/releases/tag/v2.2.0)
-[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
+**To new and existing DeepLab users**: We have released a unified codebase for
+dense pixel labeling tasks in TensorFlow2 at https://github.com/google-research/deeplab2.
+Please consider switching to the newer codebase for better support. 
 
-This project presents code for deep local and global image feature methods,
-which are particularly useful for the computer vision tasks of instance-level
-recognition and retrieval. These were introduced in the
-[DELF](https://arxiv.org/abs/1612.06321),
-[Detect-to-Retrieve](https://arxiv.org/abs/1812.01584),
-[DELG](https://arxiv.org/abs/2001.05027) and
-[Google Landmarks Dataset v2](https://arxiv.org/abs/2004.01804) papers.
+DeepLab is a state-of-art deep learning model for semantic image segmentation,
+where the goal is to assign semantic labels (e.g., person, dog, cat and so on)
+to every pixel in the input image. Current implementation includes the following
+features:
 
-We provide Tensorflow code for building and training models, and python code for
-image retrieval and local feature matching. Pre-trained models for the landmark
-recognition domain are also provided.
+1.  DeepLabv1 [1]: We use *atrous convolution* to explicitly control the
+    resolution at which feature responses are computed within Deep Convolutional
+    Neural Networks.
 
-If you make use of this codebase, please consider citing the following papers:
+2.  DeepLabv2 [2]: We use *atrous spatial pyramid pooling* (ASPP) to robustly
+    segment objects at multiple scales with filters at multiple sampling rates
+    and effective fields-of-views.
 
-DELF:
-[![Paper](http://img.shields.io/badge/paper-arXiv.1612.06321-B3181B.svg)](https://arxiv.org/abs/1612.06321)
+3.  DeepLabv3 [3]: We augment the ASPP module with *image-level feature* [5, 6]
+    to capture longer range information. We also include *batch normalization*
+    [7] parameters to facilitate the training. In particular, we applying atrous
+    convolution to extract output features at different output strides during
+    training and evaluation, which efficiently enables training BN at output
+    stride = 16 and attains a high performance at output stride = 8 during
+    evaluation.
 
-```
-"Large-Scale Image Retrieval with Attentive Deep Local Features",
-H. Noh, A. Araujo, J. Sim, T. Weyand and B. Han,
-Proc. ICCV'17
-```
+4.  DeepLabv3+ [4]: We extend DeepLabv3 to include a simple yet effective
+    decoder module to refine the segmentation results especially along object
+    boundaries. Furthermore, in this encoder-decoder structure one can
+    arbitrarily control the resolution of extracted encoder features by atrous
+    convolution to trade-off precision and runtime.
 
-Detect-to-Retrieve:
-[![Paper](http://img.shields.io/badge/paper-arXiv.1812.01584-B3181B.svg)](https://arxiv.org/abs/1812.01584)
+If you find the code useful for your research, please consider citing our latest
+works:
 
-```
-"Detect-to-Retrieve: Efficient Regional Aggregation for Image Search",
-M. Teichmann*, A. Araujo*, M. Zhu and J. Sim,
-Proc. CVPR'19
-```
-
-DELG:
-[![Paper](http://img.shields.io/badge/paper-arXiv.2001.05027-B3181B.svg)](https://arxiv.org/abs/2001.05027)
+*   DeepLabv3+:
 
 ```
-"Unifying Deep Local and Global Features for Image Search",
-B. Cao*, A. Araujo* and J. Sim,
-Proc. ECCV'20
+@inproceedings{deeplabv3plus2018,
+  title={Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation},
+  author={Liang-Chieh Chen and Yukun Zhu and George Papandreou and Florian Schroff and Hartwig Adam},
+  booktitle={ECCV},
+  year={2018}
+}
 ```
 
-GLDv2:
-[![Paper](http://img.shields.io/badge/paper-arXiv.2004.01804-B3181B.svg)](https://arxiv.org/abs/2004.01804)
+*   MobileNetv2:
 
 ```
-"Google Landmarks Dataset v2 - A Large-Scale Benchmark for Instance-Level Recognition and Retrieval",
-T. Weyand*, A. Araujo*, B. Cao and J. Sim,
-Proc. CVPR'20
+@inproceedings{mobilenetv22018,
+  title={MobileNetV2: Inverted Residuals and Linear Bottlenecks},
+  author={Mark Sandler and Andrew Howard and Menglong Zhu and Andrey Zhmoginov and Liang-Chieh Chen},
+  booktitle={CVPR},
+  year={2018}
+}
 ```
 
-## News
+*   MobileNetv3:
 
--   [Jul'20] Check out our ECCV'20 paper:
-    ["Unifying Deep Local and Global Features for Image Search"](https://arxiv.org/abs/2001.05027)
--   [Apr'20] Check out our CVPR'20 paper: ["Google Landmarks Dataset v2 - A
-    Large-Scale Benchmark for Instance-Level Recognition and
-    Retrieval"](https://arxiv.org/abs/2004.01804)
--   [Jun'19] DELF achieved 2nd place in
-    [CVPR Visual Localization challenge (Local Features track)](https://sites.google.com/corp/view/ltvl2019).
-    See our slides
-    [here](https://docs.google.com/presentation/d/e/2PACX-1vTswzoXelqFqI_pCEIVl2uazeyGr7aKNklWHQCX-CbQ7MB17gaycqIaDTguuUCRm6_lXHwCdrkP7n1x/pub?start=false&loop=false&delayms=3000).
--   [Apr'19] Check out our CVPR'19 paper:
-    ["Detect-to-Retrieve: Efficient Regional Aggregation for Image Search"](https://arxiv.org/abs/1812.01584)
--   [Jun'18] DELF achieved state-of-the-art results in a CVPR'18 image retrieval
-    paper: [Radenovic et al., "Revisiting Oxford and Paris: Large-Scale Image
-    Retrieval Benchmarking"](https://arxiv.org/abs/1803.11285).
--   [Apr'18] DELF was featured in
-    [ModelDepot](https://modeldepot.io/mikeshi/delf/overview)
--   [Mar'18] DELF is now available in
-    [TF-Hub](https://www.tensorflow.org/hub/modules/google/delf/1)
+```
+@inproceedings{mobilenetv32019,
+  title={Searching for MobileNetV3},
+  author={Andrew Howard and Mark Sandler and Grace Chu and Liang-Chieh Chen and Bo Chen and Mingxing Tan and Weijun Wang and Yukun Zhu and Ruoming Pang and Vijay Vasudevan and Quoc V. Le and Hartwig Adam},
+  booktitle={ICCV},
+  year={2019}
+}
+```
 
-## Datasets
+*  Architecture search for dense prediction cell:
 
-We have two Google-Landmarks dataset versions:
+```
+@inproceedings{dpc2018,
+  title={Searching for Efficient Multi-Scale Architectures for Dense Image Prediction},
+  author={Liang-Chieh Chen and Maxwell D. Collins and Yukun Zhu and George Papandreou and Barret Zoph and Florian Schroff and Hartwig Adam and Jonathon Shlens},
+  booktitle={NIPS},
+  year={2018}
+}
 
--   Initial version (v1) can be found
-    [here](https://www.kaggle.com/google/google-landmarks-dataset). In includes
-    the Google Landmark Boxes which were described in the Detect-to-Retrieve
-    paper.
--   Second version (v2) has been released as part of two Kaggle challenges:
-    [Landmark Recognition](https://www.kaggle.com/c/landmark-recognition-2019)
-    and [Landmark Retrieval](https://www.kaggle.com/c/landmark-retrieval-2019).
-    It can be downloaded from CVDF
-    [here](https://github.com/cvdfoundation/google-landmark). See also
-    [the CVPR'20 paper](https://arxiv.org/abs/2004.01804) on this new dataset
-    version.
+```
 
-If you make use of these datasets in your research, please consider citing the
-papers mentioned above.
+*  Auto-DeepLab (also called hnasnet in core/nas_network.py):
 
-## Installation
+```
+@inproceedings{autodeeplab2019,
+  title={Auto-DeepLab: Hierarchical Neural Architecture Search for Semantic
+Image Segmentation},
+  author={Chenxi Liu and Liang-Chieh Chen and Florian Schroff and Hartwig Adam
+  and Wei Hua and Alan Yuille and Li Fei-Fei},
+  booktitle={CVPR},
+  year={2019}
+}
 
-To be able to use this code, please follow
-[these instructions](INSTALL_INSTRUCTIONS.md) to properly install the DELF
-library.
+```
 
-## Quick start
 
-### Pre-trained models
+In the current implementation, we support adopting the following network
+backbones:
 
-We release several pre-trained models. See instructions in the following
-sections for examples on how to use the models.
+1.  MobileNetv2 [8] and MobileNetv3 [16]: A fast network structure designed
+    for mobile devices.
 
-**DELF pre-trained on the Google-Landmarks dataset v1**
-([link](http://storage.googleapis.com/delf/delf_gld_20190411.tar.gz)). Presented
-in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584). Boosts
-performance by ~4% mAP compared to ICCV'17 DELF model.
+2.  Xception [9, 10]: A powerful network structure intended for server-side
+    deployment.
 
-**DELG pre-trained on the Google-Landmarks dataset v1**
-([R101-DELG](http://storage.googleapis.com/delf/r101delg_gld_20200814.tar.gz),
-[R50-DELG](http://storage.googleapis.com/delf/r50delg_gld_20200814.tar.gz)).
-Presented in the [DELG paper](https://arxiv.org/abs/2001.05027).
+3.  ResNet-v1-{50,101} [14]: We provide both the original ResNet-v1 and its
+    'beta' variant where the 'stem' is modified for semantic segmentation.
 
-**DELG pre-trained on the Google-Landmarks dataset v2 (clean)**
-([R101-DELG](https://storage.googleapis.com/delf/r101delg_gldv2clean_20200914.tar.gz),
-[R50-DELG](https://storage.googleapis.com/delf/r50delg_gldv2clean_20200914.tar.gz)).
-Presented in the [DELG paper](https://arxiv.org/abs/2001.05027).
+4.  PNASNet [15]: A Powerful network structure found by neural architecture
+    search.
 
-**RN101-ArcFace pre-trained on the Google-Landmarks dataset v2 (train-clean)**
-([link](https://storage.googleapis.com/delf/rn101_af_gldv2clean_20200814.tar.gz)).
-Presented in the [GLDv2 paper](https://arxiv.org/abs/2004.01804).
+5.  Auto-DeepLab (called HNASNet in the code): A segmentation-specific network
+    backbone found by neural architecture search.
 
-**DELF pre-trained on Landmarks-Clean/Landmarks-Full dataset**
-([link](http://storage.googleapis.com/delf/delf_v1_20171026.tar.gz)). Presented
-in the [DELF paper](https://arxiv.org/abs/1612.06321), model was trained on the
-dataset released by the [DIR paper](https://arxiv.org/abs/1604.01325).
+This directory contains our TensorFlow [11] implementation. We provide codes
+allowing users to train the model, evaluate results in terms of mIOU (mean
+intersection-over-union), and visualize segmentation results. We use PASCAL VOC
+2012 [12] and Cityscapes [13] semantic segmentation benchmarks as an example in
+the code.
 
-**Faster-RCNN detector pre-trained on Google Landmark Boxes**
-([link](http://storage.googleapis.com/delf/d2r_frcnn_20190411.tar.gz)).
-Presented in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584).
+Some segmentation results on Flickr images:
+<p align="center">
+    <img src="g3doc/img/vis1.png" width=600></br>
+    <img src="g3doc/img/vis2.png" width=600></br>
+    <img src="g3doc/img/vis3.png" width=600></br>
+</p>
 
-**MobileNet-SSD detector pre-trained on Google Landmark Boxes**
-([link](http://storage.googleapis.com/delf/d2r_mnetssd_20190411.tar.gz)).
-Presented in the [Detect-to-Retrieve paper](https://arxiv.org/abs/1812.01584).
+## Contacts (Maintainers)
 
-Besides these, we also release pre-trained codebooks for local feature
-aggregation. See the
-[Detect-to-Retrieve instructions](delf/python/detect_to_retrieve/DETECT_TO_RETRIEVE_INSTRUCTIONS.md)
-for details.
+*   Liang-Chieh Chen, github: [aquariusjay](https://github.com/aquariusjay)
+*   YuKun Zhu, github: [yknzhu](https://github.com/YknZhu)
+*   George Papandreou, github: [gpapan](https://github.com/gpapan)
+*   Hui Hui, github: [huihui-personal](https://github.com/huihui-personal)
+*   Maxwell D. Collins, github: [mcollinswisc](https://github.com/mcollinswisc)
+*   Ting Liu: github: [tingliu](https://github.com/tingliu)
 
-### DELF extraction and matching
+## Tables of Contents
 
-Please follow [these instructions](EXTRACTION_MATCHING.md). At the end, you
-should obtain a nice figure showing local feature matches, as:
+Demo:
 
-![MatchedImagesExample](delf/python/examples/matched_images_example.jpg)
+*   <a href='https://colab.sandbox.google.com/github/tensorflow/models/blob/master/research/deeplab/deeplab_demo.ipynb'>Colab notebook for off-the-shelf inference.</a><br>
 
-### DELF training
+Running:
 
-Please follow [these instructions](delf/python/training/README.md).
+*   <a href='g3doc/installation.md'>Installation.</a><br>
+*   <a href='g3doc/pascal.md'>Running DeepLab on PASCAL VOC 2012 semantic segmentation dataset.</a><br>
+*   <a href='g3doc/cityscapes.md'>Running DeepLab on Cityscapes semantic segmentation dataset.</a><br>
+*   <a href='g3doc/ade20k.md'>Running DeepLab on ADE20K semantic segmentation dataset.</a><br>
 
-### DELG
+Models:
 
-Please follow [these instructions](delf/python/delg/DELG_INSTRUCTIONS.md). At
-the end, you should obtain image retrieval results on the Revisited Oxford/Paris
-datasets.
+*   <a href='g3doc/model_zoo.md'>Checkpoints and frozen inference graphs.</a><br>
 
-### GLDv2 baseline
+Misc:
 
-Please follow
-[these instructions](delf/python/datasets/google_landmarks_dataset/README.md). At the
-end, you should obtain image retrieval results on the Revisited Oxford/Paris
-datasets.
+*   Please check <a href='g3doc/faq.md'>FAQ</a> if you have some questions before reporting the issues.<br>
 
-### Landmark detection
+## Getting Help
 
-Please follow [these instructions](DETECTION.md). At the end, you should obtain
-a nice figure showing a detection, as:
+To get help with issues you may encounter while using the DeepLab Tensorflow
+implementation, create a new question on
+[StackOverflow](https://stackoverflow.com/) with the tag "tensorflow".
 
-![DetectionExample1](delf/python/examples/detection_example_1.jpg)
+Please report bugs (i.e., broken code, not usage questions) to the
+tensorflow/models GitHub [issue
+tracker](https://github.com/tensorflow/models/issues), prefixing the issue name
+with "deeplab".
 
-### Detect-to-Retrieve
+## License
 
-Please follow
-[these instructions](delf/python/detect_to_retrieve/DETECT_TO_RETRIEVE_INSTRUCTIONS.md).
-At the end, you should obtain image retrieval results on the Revisited
-Oxford/Paris datasets.
+All the codes in deeplab folder is covered by the [LICENSE](https://github.com/tensorflow/models/blob/master/LICENSE)
+under tensorflow/models. Please refer to the LICENSE for details.
 
-## Code overview
+## Change Logs
 
-DELF/D2R/DELG/GLD code is located under the `delf` directory. There are two
-directories therein, `protos` and `python`.
+### March 26, 2020
+* Supported EdgeTPU-DeepLab and EdgeTPU-DeepLab-slim on Cityscapes.
+**Contributor**: Yun Long.
 
-### `delf/protos`
+### November 20, 2019
+* Supported MobileNetV3 large and small model variants on Cityscapes.
+**Contributor**: Yukun Zhu.
 
-This directory contains protobufs for local feature aggregation
-(`aggregation_config.proto`), serializing detected boxes (`box.proto`),
-serializing float tensors (`datum.proto`), configuring DELF/DELG extraction
-(`delf_config.proto`), serializing local features (`feature.proto`).
 
-### `delf/python`
+### March 27, 2019
 
-This directory contains files for several different purposes, such as:
-reading/writing tensors/features (`box_io.py`, `datum_io.py`, `feature_io.py`),
-local feature aggregation extraction and similarity computation
-(`feature_aggregation_extractor.py`, `feature_aggregation_similarity.py`) and
-helper functions for image/feature loading/processing (`utils.py`,
-`feature_extractor.py`).
+* Supported using different loss weights on different classes during training.
+**Contributor**: Yuwei Yang.
 
-The subdirectory `delf/python/examples` contains sample scripts to run DELF/DELG
-feature extraction/matching (`extractor.py`, `extract_features.py`,
-`match_images.py`) and object detection (`detector.py`, `extract_boxes.py`).
-`delf_config_example.pbtxt` shows an example instantiation of the DelfConfig
-proto, used for DELF feature extraction.
 
-The subdirectory `delf/python/delg` contains sample scripts/configs related to
-the DELG paper: `extract_features.py` for local+global feature extraction (with
-and example `delg_gld_config.pbtxt`) and `perform_retrieval.py` for performing
-retrieval/scoring.
+### March 26, 2019
 
-The subdirectory `delf/python/detect_to_retrieve` contains sample
-scripts/configs related to the Detect-to-Retrieve paper, for feature/box
-extraction/aggregation/clustering (`aggregation_extraction.py`,
-`boxes_and_features_extraction.py`, `cluster_delf_features.py`,
-`extract_aggregation.py`, `extract_index_boxes_and_features.py`,
-`extract_query_features.py`), image retrieval/reranking (`perform_retrieval.py`,
-`image_reranking.py`), along with configs used for feature
-extraction/aggregation (`delf_gld_config.pbtxt`,
-`index_aggregation_config.pbtxt`, `query_aggregation_config.pbtxt`) and
-Revisited Oxford/Paris dataset parsing/evaluation (`dataset.py`).
+* Supported ResNet-v1-18. **Contributor**: Michalis Raptis.
 
-The subdirectory `delf/python/google_landmarks_dataset` contains sample
-scripts/modules for computing GLD metrics (`metrics.py`,
-`compute_recognition_metrics.py`, `compute_retrieval_metrics.py`), GLD file IO
-(`dataset_file_io.py`) / reproducing results from the GLDv2 paper
-(`rn101_af_gldv2clean_config.pbtxt` and the instructions therein).
 
-The subdirectory `delf/python/training` contains sample scripts/modules for
-performing model training (`train.py`) based on a ResNet50 DELF model
-(`model/resnet50.py`, `model/delf_model.py`), also presenting relevant model
-exporting scripts and associated utils (`model/export_model.py`,
-`model/export_global_model.py`, `model/export_model_utils.py`) and dataset
-downloading/preprocessing (`download_dataset.sh`, `build_image_dataset.py`,
-`datasets/googlelandmarks.py`).
+### March 6, 2019
 
-Besides these, other files in the different subdirectories contain tests for the
-various modules.
+* Released the evaluation code (under the `evaluation` folder) for image
+parsing, a.k.a. panoptic segmentation. In particular, the released code supports
+evaluating the parsing results in terms of both the parsing covering and
+panoptic quality metrics. **Contributors**: Maxwell Collins and Ting Liu.
 
-## Maintainers
 
-Andr&eacute; Araujo (@andrefaraujo)
+### February 6, 2019
 
-## Release history
+* Updated decoder module to exploit multiple low-level features with different
+output_strides.
 
-### Jul, 2020
+### December 3, 2018
 
--   Full TF2 support. Only one minor `compat.v1` usage left. Updated
-    instructions to require TF2.2
--   Refactored / much improved training code, with very detailed, step-by-step
-    instructions
+* Released the MobileNet-v2 checkpoint on ADE20K.
 
-**Thanks to contributors**: Dan Anghel, Barbara Fusinska and Andr&eacute;
-Araujo.
 
-### May, 2020
+### November 19, 2018
 
--   Codebase is now Python3-first
--   DELG model/code released
--   GLDv2 baseline model released
+* Supported NAS architecture for feature extraction. **Contributor**: Chenxi Liu.
 
-**Thanks to contributors**: Barbara Fusinska and Andr&eacute; Araujo.
+* Supported hard pixel mining during training.
 
-### April, 2020 (version 2.0)
 
--   Initial DELF training code released.
--   Codebase is now fully compatible with TF 2.1.
+### October 1, 2018
 
-**Thanks to contributors**: Arun Mukundan, Yuewei Na and Andr&eacute; Araujo.
+* Released MobileNet-v2 depth-multiplier = 0.5 COCO-pretrained checkpoints on
+PASCAL VOC 2012, and Xception-65 COCO pretrained checkpoint (i.e., no PASCAL
+pretrained).
 
-### April, 2019
 
-Detect-to-Retrieve code released.
+### September 5, 2018
 
-Includes pre-trained models to detect landmark boxes, and DELF model pre-trained
-on Google Landmarks v1 dataset.
+* Released Cityscapes pretrained checkpoints with found best dense prediction cell.
 
-**Thanks to contributors**: Andr&eacute; Araujo, Marvin Teichmann, Menglong Zhu,
-Jack Sim.
 
-### October, 2017
+### May 26, 2018
 
-Initial release containing DELF-v1 code, including feature extraction and
-matching examples. Pre-trained DELF model from ICCV'17 paper is released.
+* Updated ADE20K pretrained checkpoint.
 
-**Thanks to contributors**: Andr&eacute; Araujo, Hyeonwoo Noh, Youlong Cheng,
-Jack Sim.
+
+### May 18, 2018
+* Added builders for ResNet-v1 and Xception model variants.
+* Added ADE20K support, including colormap and pretrained Xception_65 checkpoint.
+* Fixed a bug on using non-default depth_multiplier for MobileNet-v2.
+
+
+### March 22, 2018
+
+* Released checkpoints using MobileNet-V2 as network backbone and pretrained on
+PASCAL VOC 2012 and Cityscapes.
+
+
+### March 5, 2018
+
+* First release of DeepLab in TensorFlow including deeper Xception network
+backbone. Included checkpoints that have been pretrained on PASCAL VOC 2012
+and Cityscapes.
+
+## References
+
+1.  **Semantic Image Segmentation with Deep Convolutional Nets and Fully Connected CRFs**<br />
+    Liang-Chieh Chen+, George Papandreou+, Iasonas Kokkinos, Kevin Murphy, Alan L. Yuille (+ equal
+    contribution). <br />
+    [[link]](https://arxiv.org/abs/1412.7062). In ICLR, 2015.
+
+2.  **DeepLab: Semantic Image Segmentation with Deep Convolutional Nets,**
+    **Atrous Convolution, and Fully Connected CRFs** <br />
+    Liang-Chieh Chen+, George Papandreou+, Iasonas Kokkinos, Kevin Murphy, and Alan L Yuille (+ equal
+    contribution). <br />
+    [[link]](http://arxiv.org/abs/1606.00915). TPAMI 2017.
+
+3.  **Rethinking Atrous Convolution for Semantic Image Segmentation**<br />
+    Liang-Chieh Chen, George Papandreou, Florian Schroff, Hartwig Adam.<br />
+    [[link]](http://arxiv.org/abs/1706.05587). arXiv: 1706.05587, 2017.
+
+4.  **Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation**<br />
+    Liang-Chieh Chen, Yukun Zhu, George Papandreou, Florian Schroff, Hartwig Adam.<br />
+    [[link]](https://arxiv.org/abs/1802.02611). In ECCV, 2018.
+
+5.  **ParseNet: Looking Wider to See Better**<br />
+    Wei Liu, Andrew Rabinovich, Alexander C Berg<br />
+    [[link]](https://arxiv.org/abs/1506.04579). arXiv:1506.04579, 2015.
+
+6.  **Pyramid Scene Parsing Network**<br />
+    Hengshuang Zhao, Jianping Shi, Xiaojuan Qi, Xiaogang Wang, Jiaya Jia<br />
+    [[link]](https://arxiv.org/abs/1612.01105). In CVPR, 2017.
+
+7.  **Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate shift**<br />
+    Sergey Ioffe, Christian Szegedy <br />
+    [[link]](https://arxiv.org/abs/1502.03167). In ICML, 2015.
+
+8.  **MobileNetV2: Inverted Residuals and Linear Bottlenecks**<br />
+    Mark Sandler, Andrew Howard, Menglong Zhu, Andrey Zhmoginov, Liang-Chieh Chen<br />
+    [[link]](https://arxiv.org/abs/1801.04381). In CVPR, 2018.
+
+9.  **Xception: Deep Learning with Depthwise Separable Convolutions**<br />
+    François Chollet<br />
+    [[link]](https://arxiv.org/abs/1610.02357). In CVPR, 2017.
+
+10. **Deformable Convolutional Networks -- COCO Detection and Segmentation Challenge 2017 Entry**<br />
+    Haozhi Qi, Zheng Zhang, Bin Xiao, Han Hu, Bowen Cheng, Yichen Wei, Jifeng Dai<br />
+    [[link]](http://presentations.cocodataset.org/COCO17-Detect-MSRA.pdf). ICCV COCO Challenge
+    Workshop, 2017.
+
+11. **Tensorflow: Large-Scale Machine Learning on Heterogeneous Distributed Systems**<br />
+    M. Abadi, A. Agarwal, et al. <br />
+    [[link]](https://arxiv.org/abs/1603.04467). arXiv:1603.04467, 2016.
+
+12. **The Pascal Visual Object Classes Challenge – A Retrospective,** <br />
+    Mark Everingham, S. M. Ali Eslami, Luc Van Gool, Christopher K. I. Williams, John
+    Winn, and Andrew Zisserma. <br />
+    [[link]](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/). IJCV, 2014.
+
+13. **The Cityscapes Dataset for Semantic Urban Scene Understanding**<br />
+    Cordts, Marius, Mohamed Omran, Sebastian Ramos, Timo Rehfeld, Markus Enzweiler, Rodrigo Benenson, Uwe Franke, Stefan Roth, Bernt Schiele. <br />
+    [[link]](https://www.cityscapes-dataset.com/). In CVPR, 2016.
+
+14. **Deep Residual Learning for Image Recognition**<br />
+    Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun. <br />
+    [[link]](https://arxiv.org/abs/1512.03385). In CVPR, 2016.
+
+15. **Progressive Neural Architecture Search**<br />
+    Chenxi Liu, Barret Zoph, Maxim Neumann, Jonathon Shlens, Wei Hua, Li-Jia Li, Li Fei-Fei, Alan Yuille, Jonathan Huang, Kevin Murphy. <br />
+    [[link]](https://arxiv.org/abs/1712.00559). In ECCV, 2018.
+
+16. **Searching for MobileNetV3**<br />
+    Andrew Howard, Mark Sandler, Grace Chu, Liang-Chieh Chen, Bo Chen, Mingxing Tan, Weijun Wang, Yukun Zhu, Ruoming Pang, Vijay Vasudevan, Quoc V. Le, Hartwig Adam. <br />
+    [[link]](https://arxiv.org/abs/1905.02244). In ICCV, 2019.
