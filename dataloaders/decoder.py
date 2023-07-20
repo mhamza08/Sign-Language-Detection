@@ -12,3 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""The generic decoder interface."""
+
+import abc
+
+
+class Decoder(metaclass=abc.ABCMeta):
+  """Decodes the raw data into tensors."""
+
+  @abc.abstractmethod
+  def decode(self, serialized_example):
+    """Decodes the serialized example into tensors.
+
+    Args:
+      serialized_example: a serialized string tensor that encodes the data.
+
+    Returns:
+      decoded_tensors: a dict of Tensors.
+    """
+    pass
