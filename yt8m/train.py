@@ -12,3 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""YT8M model training driver."""
+
+from absl import app
+
+from official.common import flags as tfm_flags
+# pylint: disable=unused-import
+from official.projects.yt8m.configs import yt8m
+from official.projects.yt8m.tasks import yt8m_task
+# pylint: enable=unused-import
+from official.vision import train
+
+
+if __name__ == '__main__':
+  tfm_flags.define_flags()
+  app.run(train.main)
