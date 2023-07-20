@@ -1,13 +1,17 @@
-This directory contain guides to help users to train NLP models.
+# Public docs for TensorFlow Models
 
-1. [Training guide](train.md) explain the steps to follow for training NLP
-models on GPU and TPU.
+This directory contains the top-level public documentation for
+[TensorFlow Models](https://github.com/tensorflow/models)
 
-2. [Pretrained_models guide](pretrained_models.md) explain how to load
-pre-trained NLP models (baselines and checkpoints) that can be finetuned
-further depending on application.
+This directory is mirrored to https://tensorflow.org/tfmodels, and is mainly
+concerned with documenting the tools provided in the `tensorflow_models` pip
+package (including `orbit`).
 
-3. [TF-Hub guide](tfhub.md) explain how to use TF-NLP's
-[export_tfhub](https://github.com/tensorflow/models/blob/master/official/nlp/tools/export_tfhub.py)
-tool to export pre-trained Transformer encoders to SavedModels format that are
-suitable for publication on TF Hub.
+Api-reference pages are
+[available on the site](https://www.tensorflow.org/api_docs/more).
+
+The
+[Official Models](https://github.com/tensorflow/models/blob/master/official/projects)
+and [Research Models](https://github.com/tensorflow/models/blob/master/research)
+directories are not described in detail here, refer to the individual project
+directories for more information.

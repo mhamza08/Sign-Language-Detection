@@ -12,20 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Core is shared by both `nlp` and `vision`."""
+"""Experiment factory methods."""
 
-from official.core import actions
-from official.core import base_task
-from official.core import base_trainer
-from official.core import config_definitions
-from official.core import exp_factory
-from official.core import export_base
-from official.core import file_writers
-from official.core import input_reader
+from official.core import config_definitions as cfg
 from official.core import registry
-from official.core import savedmodel_checkpoint_manager
-from official.core import task_factory
-from official.core import tf_example_builder
-from official.core import tf_example_feature_key
-from official.core import train_lib
-from official.core import train_utils
+
+
+_REGISTERED_CONFIGS = {}
+
+
+def register_config_factory(name):
+  """Register ExperimentConfig factory method."""
+  return registry.register(_REGISTERED_CONFIGS, name)
+
+
+def get_exp_config(exp_name: str) -> cfg.ExperimentConfig:
+  """Looks up the `ExperimentConfig` according to the `exp_name`."""
+  exp_creater = registry.lookup(_REGISTERED_CONFIGS, exp_name)
+  return exp_creater()
