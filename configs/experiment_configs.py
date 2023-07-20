@@ -12,3 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Experiments definition."""
+# pylint: disable=unused-import
+from official.nlp.configs import finetuning_experiments
+from official.nlp.configs import pretraining_experiments
+from official.nlp.configs import wmt_transformer_experiments
