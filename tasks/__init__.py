@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tasks package definition."""
-
-from official.vision.tasks.image_classification import ImageClassificationTask
-from official.vision.tasks.maskrcnn import MaskRCNNTask
-from official.vision.tasks.retinanet import RetinaNetTask
-from official.vision.tasks.semantic_segmentation import SemanticSegmentationTask
-from official.vision.tasks.video_classification import VideoClassificationTask
+"""TensorFlow Models NLP Tasks."""
+# pylint: disable=g-multiple-import
+from official.nlp.tasks.electra_task import ElectraPretrainConfig, ElectraPretrainTask
+from official.nlp.tasks.masked_lm import MaskedLMConfig, MaskedLMTask
+from official.nlp.tasks.question_answering import QuestionAnsweringConfig, QuestionAnsweringTask
+from official.nlp.tasks.sentence_prediction import SentencePredictionConfig, SentencePredictionTask
+from official.nlp.tasks.tagging import TaggingConfig, TaggingTask
+from official.nlp.tasks.translation import TranslationConfig, TranslationTask

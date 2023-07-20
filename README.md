@@ -1,31 +1,71 @@
-# TensorFlow Model Garden Modeling Projects
+# TF-NLP Model Garden
 
-This directory contains projects using Modeling libraries of TensorFlow Model
-Garden. More details about each project can be found in the individual
-project folders listed below.
+⚠️ Disclaimer: All datasets hyperlinked from this page are not owned or
+distributed by Google. The dataset is made available by third parties. Please
+review the terms and conditions made available by the third parties before using
+the data.
 
-## Projects
+This codebase provides a Natural Language Processing modeling toolkit written in
+[TF2](https://www.tensorflow.org/guide/effective_tf2). It allows researchers and
+developers to reproduce state-of-the-art model results and train custom models
+to experiment new research ideas.
 
-* [AssembleNet](./assemblenet/README.md)
-* [BASNet](./basnet/README.md)
-* [BigBird](./bigbird/README.md)
-* [DeepMAC Mask-RCNN](./deepmac_maskrcnn/README.md)
-* [DETR](./detr/README.md)
-* [Edge-TPU for Vision and NLP](./edgetpu/README.md)
-* [Language-agnostic BERT Sentence Embedding](./labse/README.md)
-* [Long-Document Transformer](./longformer/README.md)
-* [MobileBERT](./mobilebert/README.md)
-* [MoViNets](./movinet/README.md)
-* [News Headline Generation Model: NHNet](./nhnet/README.md)
-* [Training with Pruning](./pruning/README.md)
-* [QAT for Computer Vision](./qat/vision/README.md)
-* [Roformer Project](./roformer/README.md)
-* [Training ELECTRA Augmented with Multi-word Selection](./teams/README.md)
-* [NLP example project](./text_classification_example/README.md)
-* [TensorNetwork BERT](./tn_bert/README.md)
-* [Token Dropping for Efficient BERT Pretraining](./token_dropping/README.md)
-* [Spatiotemporal Contrastive Video Representation Learning](./video_ssl/README.md)
-* [Vision Transformer (ViT)](./vit/README.md)
-* [Data-Efficient Image Transformer (DEIT)](./vit/README.md)
-* [Volumetric Models](./volumetric_models/README.md)
-* [YouTube-8M Tensorflow Starter Code](./yt8m/README.md)
+## Features
+
+*   Reusable and modularized modeling building blocks
+*   State-of-the-art reproducible
+*   Easy to customize and extend
+*   End-to-end training
+*   Distributed trainable on both GPUs and TPUs
+
+## Major components
+
+### Libraries
+
+We provide modeling library to allow users to train custom models for new
+research ideas. Detailed instructions can be found in READMEs in each folder.
+
+*   [modeling/](modeling): modeling library that provides building blocks
+    (e.g.,Layers, Networks, and Models) that can be assembled into
+    transformer-based architectures.
+*   [data/](data): binaries and utils for input preprocessing, tokenization,
+    etc.
+
+### State-of-the-Art models and examples
+
+We provide SoTA model implementations, pre-trained models, training and
+evaluation examples, and command lines. Detail instructions can be found in the
+READMEs for specific papers. Below are some papers implemented in the repository
+and more NLP projects can be found in the
+[`projects`](https://github.com/tensorflow/models/tree/master/official/projects)
+folder:
+
+1.  [BERT](MODEL_GARDEN.md#available-model-configs): [BERT: Pre-training of Deep
+    Bidirectional Transformers for Language
+    Understanding](https://arxiv.org/abs/1810.04805) by Devlin et al., 2018
+2.  [ALBERT](MODEL_GARDEN.md#available-model-configs):
+    [A Lite BERT for Self-supervised Learning of Language Representations](https://arxiv.org/abs/1909.11942)
+    by Lan et al., 2019
+3.  [XLNet](MODEL_GARDEN.md):
+    [XLNet: Generalized Autoregressive Pretraining for Language Understanding](https://arxiv.org/abs/1906.08237)
+    by Yang et al., 2019
+4.  [Transformer for translation](MODEL_GARDEN.md#available-model-configs):
+    [Attention Is All You Need](https://arxiv.org/abs/1706.03762) by Vaswani et
+    al., 2017
+
+### Common Training Driver
+
+We provide a single common driver [train.py](train.py) to train above SoTA
+models on popular tasks. Please see [docs/train.md](docs/train.md) for more
+details.
+
+### Pre-trained models with checkpoints and TF-Hub
+
+We provide a large collection of baselines and checkpoints for NLP pre-trained
+models. Please see [docs/pretrained_models.md](docs/pretrained_models.md) for
+more details.
+
+## More Documentations
+
+Please read through the model training tutorials and references in the
+[docs/ folder](docs/README.md).
