@@ -1,13 +1,10 @@
-# Contributing to the TensorFlow Object Detection API
+# How to contribute
 
-Patches to TensorFlow Object Detection API are welcome!
+![Contributors](https://img.shields.io/github/contributors/tensorflow/models)
 
-We require contributors to fill out either the individual or corporate
-Contributor License Agreement (CLA).
+We encourage you to contribute to the TensorFlow Model Garden.
 
-  * If you are an individual writing original source code and you're sure you own the intellectual property, then you'll need to sign an [individual CLA](http://code.google.com/legal/individual-cla-v1.0.html).
-  * If you work for a company that wants to allow you to contribute your work, then you'll need to sign a [corporate CLA](http://code.google.com/legal/corporate-cla-v1.0.html).
+Please read our [guidelines](../../wiki/How-to-contribute) for details.
 
-Please follow the
-[TensorFlow contributing guidelines](https://github.com/tensorflow/tensorflow/blob/master/CONTRIBUTING.md)
-when submitting pull requests.
+**NOTE**: Only [code owners](./CODEOWNERS) are allowed to merge a pull request.
+Please contact the code owners of each model to merge your pull request.
